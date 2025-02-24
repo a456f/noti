@@ -9,21 +9,27 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Claves VAPID
+// Claves VAPID (las debes mantener seguras y privadas)
 const publicVapidKey = "BAvJThBSIt_13X7E498WBbaKLfCGa_nu9XOMqJO7jfnChUpY0JqfyCgxbsMDLaOHfqOP7WB-PsHSgXAfuxRcwCQ";
 const privateVapidKey = "s3MUYjz3Eyg6AzsaZ4FRBM2Wtk_t-K5sK-JQ3hfQg6g";
 
+// Configurar las claves VAPID
 webpush.setVapidDetails("mailto:example@example.com", publicVapidKey, privateVapidKey);
 
 let subscriptions = [];
 
-// Ruta para suscribirse a notificaciones
-app.post("/subscribe", (req, res) => {
-    const subscription = req.body;
-    subscriptions.push(subscription);
-    console.log("📩 Nueva suscripción almacenada.");
-    res.status(201).json({ message: "Suscripción almacenada" });
-});
+// Permitir tanto GET como POST en /subscribe
+app.route("/subscribe")
+    .get((req, res) => {
+        // Mostrar las suscripciones almacenadas (solo por ejemplo)
+        res.status(200).json(subscriptions);
+    })
+    .post((req, res) => {
+        const subscription = req.body;
+        subscriptions.push(subscription);
+        console.log("📩 Nueva suscripción almacenada:", subscription);
+        res.status(201).json({ message: "Suscripción almacenada" });
+    });
 
 // Ruta para enviar notificaciones push
 app.post("/sendNotification", (req, res) => {
@@ -34,6 +40,7 @@ app.post("/sendNotification", (req, res) => {
         return res.status(400).json({ message: "No hay suscriptores registrados" });
     }
 
+    // Enviar notificación a todos los suscriptores
     subscriptions.forEach(subscription => {
         webpush.sendNotification(subscription, payload).catch(err => console.error("❌ Error al enviar notificación:", err));
     });
