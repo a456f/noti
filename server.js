@@ -1,9 +1,10 @@
-
 // Importar dependencias
 const webpush = require("web-push");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { networkInterfaces } = require("os");
+const axios = require("axios");
 
 const app = express();
 app.use(cors());
@@ -36,5 +37,29 @@ app.post("/sendNotification", (req, res) => {
     res.json({ message: "Notificación enviada con éxito" });
 });
 
+// Función para obtener la IP local
+function getLocalIP() {
+    const nets = networkInterfaces();
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]) {
+            if (net.family === "IPv4" && !net.internal) {
+                return net.address;
+            }
+        }
+    }
+    return "No se pudo obtener la IP";
+}
 
-app.listen(5001, () => console.log("Servidor corriendo en el puerto 5001"));
+// Iniciar servidor y mostrar las IPs
+const PORT = 5001;
+app.listen(PORT, async () => {
+    console.log(`✅ Servidor corriendo en el puerto ${PORT}`);
+    console.log(`🌍 IP LOCAL: http://${getLocalIP()}:${PORT}`);
+
+    try {
+        const { data: publicIP } = await axios.get("https://ifconfig.me", { timeout: 5000 });
+        console.log(`🌐 IP PÚBLICA: http://${publicIP}:${PORT}`);
+    } catch (error) {
+        console.log("⚠️ No se pudo obtener la IP pública. Intenta ejecutar 'curl ifconfig.me' manualmente.");
+    }
+});
