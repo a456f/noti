@@ -15,8 +15,8 @@ app.use(cors());
 // Configurar body-parser para JSON
 app.use(bodyParser.json());
 
-// Servir archivos estáticos (como HTML, CSS y JS)
-app.use(express.static(path.join(__dirname, 'public'))); // Esto busca archivos estáticos en la carpeta 'public'
+// Servir archivos estáticos (como HTML, CSS y JS) directamente en la raíz
+app.use(express.static(__dirname));  // Esto sirve archivos desde la raíz del proyecto
 
 // Claves VAPID (mantén estas claves seguras)
 const publicVapidKey = 'BAvJThBSIt_13X7E498WBbaKLfCGa_nu9XOMqJO7jfnChUpY0JqfyCgxbsMDLaOHfqOP7WB-PsHSgXAfuxRcwCQ';
