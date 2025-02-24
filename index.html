@@ -21,7 +21,7 @@
                 applicationServerKey: publicVapidKey
             });
 
-            await fetch("http://localhost:5001/subscribe", {
+            await fetch("http://82.25.75.182:5001//subscribe", {
                 method: "POST",
                 body: JSON.stringify(subscription),
                 headers: { "Content-Type": "application/json" }
@@ -31,7 +31,7 @@
         }
 
         async function sendNotification() {
-            await fetch("http://localhost:5001/sendNotification", { method: "POST" });
+            await fetch("http://82.25.75.182:5001//sendNotification", { method: "POST" });
             alert("Notificación enviada.");
         }
 
