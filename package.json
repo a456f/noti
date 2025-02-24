@@ -1,0 +1,17 @@
+{
+  "name": "web-push-notifications",
+  "version": "1.0.0",
+  "description": "Ejemplo de notificaciones push con Node.js y Web Push API",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "web-push": "^3.6.7"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Tu Nombre",
+  "license": "MIT"
+}

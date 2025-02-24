@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones Push</title>
+</head>
+<body>
+    <h1>Notificaciones Push</h1>
+    <button id="subscribe">Suscribirme a notificaciones</button>
+    <button id="send">Enviar Notificación</button>
+
+    <script>
+        const publicVapidKey = "BAvJThBSIt_13X7E498WBbaKLfCGa_nu9XOMqJO7jfnChUpY0JqfyCgxbsMDLaOHfqOP7WB-PsHSgXAfuxRcwCQ";
+
+        async function subscribeUser() {
+            const registration = await navigator.serviceWorker.register("worker.js");
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey
+            });
+
+            await fetch("http://localhost:5001/subscribe", {
+                method: "POST",
+                body: JSON.stringify(subscription),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            alert("Suscripción realizada correctamente.");
+        }
+
+        async function sendNotification() {
+            await fetch("http://localhost:5001/sendNotification", { method: "POST" });
+            alert("Notificación enviada.");
+        }
+
+        document.getElementById("subscribe").addEventListener("click", subscribeUser);
+        document.getElementById("send").addEventListener("click", sendNotification);
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Notificación</title>
+</head>
+<body>
+    <h2>Enviar Notificación a Todos los Suscritos</h2>
+    <input type="text" id="titulo" placeholder="Título de la Notificación">
+    <input type="text" id="mensaje" placeholder="Mensaje de la Notificación">
+    <button onclick="enviarNotificacion()">Enviar</button>
+
+    <script>
+        function enviarNotificacion() {
+            const titulo = document.getElementById("titulo").value;
+            const mensaje = document.getElementById("mensaje").value;
+
+            fetch("http://localhost:5001/sendNotification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ title: titulo, body: mensaje })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
