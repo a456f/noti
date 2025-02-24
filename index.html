@@ -13,51 +13,27 @@
     <script>
         const publicVapidKey = "BAvJThBSIt_13X7E498WBbaKLfCGa_nu9XOMqJO7jfnChUpY0JqfyCgxbsMDLaOHfqOP7WB-PsHSgXAfuxRcwCQ";
 
-        // Función para suscribir al usuario
         async function subscribeUser() {
-            // Verificar si el navegador soporta Service Workers
-            if ('serviceWorker' in navigator) {
-                try {
-                    // Asegúrate de que el archivo worker.js esté disponible en tu servidor
-                    const registration = await navigator.serviceWorker.register("worker.js");
+            const registration = await navigator.serviceWorker.register("worker.js");
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey
+            });
 
-                    // Suscribir al usuario
-                    const subscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: publicVapidKey
-                    });
+            await fetch("http://82.25.75.182:5001/subscribe", {
+                method: "POST",
+                body: JSON.stringify(subscription),
+                headers: { "Content-Type": "application/json" }
+            });
 
-                    // Enviar la suscripción al servidor
-                    await fetch("http://82.25.75.182:5001/subscribe", {  // Cambia la IP por la de tu servidor
-                        method: "POST",
-                        body: JSON.stringify(subscription),
-                        headers: { "Content-Type": "application/json" }
-                    });
-
-                    alert("Suscripción realizada correctamente.");
-                } catch (error) {
-                    console.error("Error al suscribir al usuario:", error);
-                    alert("Hubo un error al intentar suscribirte.");
-                }
-            } else {
-                alert("El navegador no soporta Service Workers.");
-            }
+            alert("Suscripción realizada correctamente.");
         }
 
-        // Función para enviar una notificación
         async function sendNotification() {
-            try {
-                await fetch("http://82.25.75.182:5001/sendNotification", {  // Cambiar localhost a la IP pública de tu VPS
-                    method: "POST"
-                });
-                alert("Notificación enviada.");
-            } catch (error) {
-                console.error("Error al enviar la notificación:", error);
-                alert("Hubo un error al intentar enviar la notificación.");
-            }
+            await fetch("http://82.25.75.182:5001/sendNotification", { method: "POST" });
+            alert("Notificación enviada.");
         }
 
-        // Agregar eventos a los botones
         document.getElementById("subscribe").addEventListener("click", subscribeUser);
         document.getElementById("send").addEventListener("click", sendNotification);
     </script>
